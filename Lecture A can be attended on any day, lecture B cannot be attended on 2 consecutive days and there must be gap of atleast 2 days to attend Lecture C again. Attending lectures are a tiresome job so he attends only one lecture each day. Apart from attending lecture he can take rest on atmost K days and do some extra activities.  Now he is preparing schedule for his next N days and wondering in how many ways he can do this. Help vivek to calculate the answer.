@@ -1,0 +1,35 @@
+const int M = (1e9)+7;
+const int N = 5005;
+
+int dp[N][N][3][3];
+int n,k;
+
+int rec(int id,int x,int b,int c)
+{
+    b = max(b,0LL);
+    c = max(c,0LL);
+    if(id == n)return 1;
+    if(dp[id][x][b][c] != -1)return dp[id][x][b][c];
+    int ans = 0;
+    
+    if(x>0)ans += rec(id+1,x-1,b-1,c-1),ans %= M;
+    if(!b)ans += rec(id+1,x,1,c-1),ans %= M;
+    if(!c)ans += rec(id+1,x,b-1,2),ans %= M;
+    ans += rec(id+1,x,b-1,c-1), ans%=M;
+    dp[id][x][b][c] = ans;
+    return ans;
+}
+
+signed main()
+{
+    FAST
+    int tc=1;
+    //cin>>tc;
+    for(int ti=1;ti<=tc;ti++)
+    {
+        memset(dp,-1,sizeof(dp));
+        cin>>n>>k;
+        cout<<rec(0,k,0,0)<<endl;
+    }
+    return 0;
+}
