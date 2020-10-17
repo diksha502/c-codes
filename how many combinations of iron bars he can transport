@@ -1,0 +1,77 @@
+/*solution approach
+
+we can not take all sums through recursion as N=32, it will take O(2^32) which is around 6*10^9
+
+so we divided all the sets in two groups a,b. these sets are having the sum of all subsets from 0 to n/2 and n/2 to n 
+and checked if (h-a[i] ) or smaller ie upperbound ofthat is there and added it to answer 
+ki is see phle ke to are hinge hi */
+
+#include<bits/stdc++.h>
+#include<iostream>
+using namespace std;
+#define F first
+#define S second
+#define endl '\n'
+#define MP make_pair
+#define PB push_back
+#define lb lower_bound
+#define ub upper_bound
+#define ll long long
+#define mod 1000000007
+#define pii pair<int,int>
+#define all(a) (a).begin(), (a).end()
+#define sort_unique(c) (sort(c.begin(),c.end()), c.resize(distance(c.begin(),unique(c.begin(),c.end())))) 
+#define int ll
+
+void fill(vector<ll>& arr,vector<ll>& v){
+  int n = arr.size();
+  int tot = 1<<n;
+  for(int i=0;i<tot;i++){
+    ll sum = 0;
+    for(int j=0;j<n;j++){
+      if((1<<j)&i) sum += arr[j];
+    }
+    v.PB(sum);
+  }
+  sort(all(v));
+  return;
+}
+
+ll solve(int n,vector<ll>& v,ll mx){
+  if(mx==0) return 1;
+  if(n==1){
+    if(v[0]<=mx) return 2;
+    return 1;
+  }
+  vector<ll> a,b;
+  vector<ll> temp;
+  for(int i=0;i<n/2;i++) 
+    temp.PB(v[i]);
+  fill(temp,a);
+  temp.clear();
+  for(int i=n/2;i<n;i++) 
+    temp.PB(v[i]);
+  fill(temp,b);
+  ll ans = 0;
+  for(auto it:a){
+    auto itt = ub(all(b),mx-it);
+    ans += itt-b.begin();
+  }
+  return ans;
+}
+
+signed main(){
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  cout.tie(0);
+  int n;
+  cin >> n;
+  vector<ll> v(n);
+  for(int i=0;i<n;i++) 
+    cin >> v[i];
+  ll l,r;
+  cin >> l >> r;
+  ll ans = solve(n,v,r) - solve(n,v,l-1);
+  cout << ans << endl;
+  return 0;
+}
